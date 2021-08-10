@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>HRP countries</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+    <script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoicmVsaWVmd2ViIiwiYSI6IldYR2ZuV3cifQ.eSPZMZWE6UyLtO0OH_-qrw';
+        
+	var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/reliefweb/ckk5nhokq20ae17l8df8xothq',
+	    minZoom: 1,
+	    maxZoom: 6,
+	    center: [0, 20],
+	    pitch: 0
+        });
+
+	map.dragRotate.disable();
+	map.touchZoomRotate.disableRotation();
+
+
+        map.on('load', function () {
+            const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR3LS3FpD0_15HEjqN8b1nJMmdV25Uh5uKcnHWQD1Jk_fEkpD3WSGZCIyUzZObCS7So7riM_2UKV5m8/pub?gid=0&single=true&output=csv';
+            Papa.parse(csvUrl, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function (results) {
+                    map.once('idle', () => {
+                        console.log(results.data);
+                        results.data.forEach(row => {
+                            map.setFeatureState({
+                                source: 'Nexus_fill',
+                                sourceLayer: 'wrl_polbnda_1m_ungis',
+                                id: row.Terr_ID
+                            },
+                            {
+                                Country: row.COUNTRY,
+                                Nexus: row.Nexus
+                
+                            });
+                        });
+
+                        map.addLayer({
+                            id: 'Nexus_fill',
+                            type: 'fill',
+                            source: 'Nexus_fill',
+                            'source-layer': 'wrl_polbnda_1m_ungis',
+                            layout: {},
+                            paint: {
+                                'fill-color':
+                                    [
+                                        "match",
+                                        ["feature-state", "NEXUS"],
+                                        "YES",
+                                        "#E36259",
+                                        "#ffffff"
+
+                                    ],
+                                'fill-opacity': 0.7
+
+                            }
+
+                        });
+
+                    })
+                }
+            });
+
+            //Add source layer
+            map.addSource('Nexus_fill', {
+                type: 'vector',
+                url: 'mapbox://reliefweb.3xu48qmc',
+                promoteId: 'Terr_ID'
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>
