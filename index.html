@@ -85,6 +85,16 @@
                 url: 'mapbox://reliefweb.3xu48qmc',
                 promoteId: 'Terr_ID'
             });
+		
+	// When a click event occurs on a feature in the states layer,
+	// open a popup at the location of the click, with description
+	// HTML from the click event's properties.
+	map.on('click', 'Nexus_fill', (e) => {
+	new mapboxgl.Popup()
+	.setLngLat(e.lngLat)
+	.setHTML(e.features[0].properties.name)
+	.addTo(map);
+	});
         
 	// Change the cursor to a pointer when
 	// the mouse is over the states layer.
