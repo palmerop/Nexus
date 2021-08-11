@@ -64,7 +64,8 @@
                             {
                                 Country: row.COUNTRY,
                                 Nexus: row.NEXUS,
-				CName: row.CNAME
+				CName: row.CNAME,
+				URL: row.URL
                 
                             });
                         });
@@ -97,7 +98,7 @@
 	map.on('click', 'Nexus_fill', (e) => {
 	new mapboxgl.Popup()
 	.setLngLat(e.lngLat)
-	.setHTML(e.features[0].properties.Country)
+	.setHTML(e.features[0].properties.CName)
 	.addTo(map);
 	});
         
