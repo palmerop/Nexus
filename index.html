@@ -71,7 +71,14 @@
                             'source-layer': 'wrl_polbnda_1m_ungis',
 			    //'filter': ['==', 'Nexus', 'YES'],
 			    layout: {},
-                            paint: { 'fill-color': "#E36259", 'fill-opacity': 0.7 }
+                            paint: { 'fill-color': "#E36259",
+				    'fill-opacity': 
+					    ["match", ["feature-state", "NEXUS"], 
+					    "YES",
+					    "0.7",
+					    "0.0"
+					     ],
+				   }
 
                         });
 
